@@ -1,0 +1,115 @@
+---
+Author: Tímea Moder
+Version: 1551-CNL 113 577, Rev. A
+Date: 2017-11-13
+
+---
+= LLC v7.1.0 Protocol Modules for TTCN-3 Toolset with Titan, Description
+:author: Tímea Moder
+:revnumber: 1551-CNL 113 577, Rev. A
+:revdate: 2017-11-13
+:toc:
+
+= Functionality
+
+The LLC v7.1.0 protocol module implements the message structures of the related protocol <<_5, [5]>> in a formalized way, using the standard specification language TTCN-3. This allows defining of test data (templates) in the TTCN-3 language and correctly encoding/decoding messages when executing test suites using the Titan TTCN-3 test environment.
+
+The LLC v7.1.0 protocol module uses Titan’s RAW encoding attributes <<_3, [3]>> and hence is usable with the Titan test toolset only.
+
+== Implemented Protocols
+
+This set of protocol modules implements protocol messages and constants of the LLC v7.1.0 protocol as described in <<_5, [5]>>.
+
+=== Modified and Non-Implemented Protocol Elements
+
+Combined Information (I) and Supervisory (S) frames (Section 6.4.3) and fields used only in these frames are not implemented.
+
+== Backward Incompatibilities
+
+None.
+
+== System Requirements
+
+Protocol modules are a set of TTCN-3 source code files that can be used as part of TTCN-3 test suites only. Hence, protocol modules alone do not put specific requirements on the system used. However, in order to compile and execute a TTCN-3 test suite using the set of protocol modules the following system requirements must be satisfied:
+
+Titan TTCN-3 Test Executor version CRL 113 200/6 R2A (6.2.pl0) or higher installed. For Installation Guide see <<_4, [4]>>.
+
+NOTE: This version of the test port is not compatible with Titan releases earlier than CRL 113 200/6 R2A.
+
+= Usage
+
+== Installation
+
+The set of protocol modules can be used in developing TTCN-3 test suites using any text editor; however, to make the work more efficient a TTCN3enabled text editor is recommended (for example `nedit`, `xemacs`). Since the LLC v7.1.0 protocol is used as a part of a TTCN-3 test suite, this requires TTCN-3 Test Executor be installed before the module can be compiled and executed together with other parts of the test suite. For more details on the installation of TTCN-3 Test Executor see the relevant section of <<_4, [4]>>.
+
+== Configuration
+
+None.
+
+== Examples
+
+None.
+
+= Interface Description
+
+== Top Level PDU
+
+The top level PDU is the TTCN-3 union `PDU_LLC`.
+
+[[encoding-decoding-and-other-related-functions]]
+== Encoding/Decoding and Other Related Functions
+
+This product also contains encoding/decoding functions, which assure correct encoding of messages when sent from Titan and correct decoding of messages when received by Titan.
+
+=== Implemented Encoding and Decoding Functions
+
+[cols=3*,options=header]
+|===
+
+|Name |Type of formal parameters |Type of return value
+
+|`enc_PDU_LLC` |in PDU_LLC |octetstring
+
+|`dec_PDU_LLC` |in octetstring +
+in boolean |PDU_LLC
+|===
+
+The encoding function changes the `XID` parameter length format to the long length format in case the transmitted TTCN-3 template uses the short length format but the actual length value calculated by the RAW encoder makes the long length format necessary. (The XID parameter appears in the U frames when XID, SABM or UA format is selected.)
+
+The encoding function automatically calculates the `FCS` field when the `FCS` field is set to `_'000000'O_` or when it is omitted, otherwise its TTCN-3 value is sent out.
+
+The decoder checks the `FCS` field of the received frame. If the `FCS` is OK, the value `_'000000'O_` is set, otherwise the received value is returned to TTCN-3.
+
+It is possible to skip the CRC (FCS) check with setting the boolean parameter of the decoder function to `_false_`. Its default value is `_true_`.
+
+The `N202` parameter is defined as `_4_` in the beginning of the encoder function. The tester needs to edit this in the encoder if the value has to be changed. (For UI frames transmitted in unprotected mode the FCS is calculated over the frame header and N202 octets of the information.)
+
+= Terminology
+
+== Abbreviations
+
+LLC:: Logical Link Control
+
+PDU:: Protocol Data Unit
+
+TTCN-3:: Testing and Test Control Notation version 3
+
+= References
+
+[[_1]]
+[1] ETSI ES 201 873-1 v4.4.1 (2012-04) +
+The Testing and Test Control Notation version 3. Part 1: Core Language
+
+[[_2]]
+[2] User Guide for TITAN TTCN-3 Test Executor
+
+[[_3]]
+[3] Programmer’s Technical Reference for the TITAN TTCN-3 Test Executor
+
+[[_4]]
+[4] Installation Guide for the TITAN TTCN-3 Test Executor
+
+[[_5]]
+[5] 3GPP TS 44.064 V7.1.0 (2007-03) +
+3rd Generation Partnership Project; Technical Specification Group Core Network; Mobile Station - Serving GPRS Support Node (MS-SGSN); Logical Link Control (LLC) layer specification (Release 7)
+
