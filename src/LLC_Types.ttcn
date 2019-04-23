@@ -207,6 +207,10 @@ type record of XID XID_Information;
 
 type octetstring DM_Information length(0);
 
+type octetstring NULL_Information length(0);
+
+type octetstring DISC_Information length(0);
+
 type record FRMR_Information
 {
   RejectedFrameControlField   rejectedFrameControlField,
@@ -265,7 +269,9 @@ type union Information_field_U
   SABM_Information      sABM,
   FRMR_Information      fRMR,
   DM_Information        dM,
-  XID_Information       xID
+  XID_Information       xID,
+  NULL_Information	nULL,
+  DISC_Information	dISC
 };
 
 
@@ -306,6 +312,8 @@ type record PDU_LLC_U
                                          fRMR, control_field.mBits = '1000'B;
                                            dM, control_field.mBits = '0001'B;
                                           xID, control_field.mBits = '1011'B;
+					 nULL, control_field.mBits = '0000'B;
+					 dISC, control_field.mBits = '0100'B;
                                           )";
 };
 
